@@ -1,4 +1,4 @@
-import {items, customers, orders} from "../db/DB.js";
+// import {items} from "../db/DB.js";
 import {OrderModel} from "../model/OrderModel.js";
 import {CustomerModel} from "../model/CustomerModel.js";
 import {ItemModel} from "../model/ItemModel.js";
@@ -26,6 +26,8 @@ let item = null;
 let total = 0;
 let subTotal = 0;
 let orderItems = [];
+
+let items = [];
 
 // set fields uneditable
 // function fieldsLock() {
@@ -59,17 +61,32 @@ function currentDate() {
 
 // generate oder ID
 function generateOId() {
-    if (orders.length === 0) {
-        $("#o_id").val("O001");
-        return;
-    }
-    let lastId = orders[orders.length - 1].id;
-    lastId = lastId.substring(1);
+    let orders = [];
+    $.ajax({
+        url: 'http://localhost:8080/pos/order_servlet',
+        method: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            orders = data.content;
 
-    let newId = Number.parseInt(lastId) + 1 + "";
-    newId = newId.padStart(3, "0");
+            if (orders.length === 0) {
+                $("#o_id").val("O001");
+                return;
+            }
+            let lastId = orders[orders.length - 1].oId;
+            lastId = lastId.substring(1);
 
-    $("#o_id").val("O" + newId);
+            let newId = Number.parseInt(lastId) + 1 + "";
+            newId = newId.padStart(3, "0");
+
+            $("#o_id").val("O" + newId);
+
+        },
+
+        error: function (xhr, status, error) {
+            console.error('AJAX request failed: ' + status + ', ' + error);
+        }
+    });
 
 
 }
@@ -82,16 +99,16 @@ const loadOrderItems = () => {
     orderItems.map((item) => {
         $("#o_table>tbody").append(
             `<tr>
-                <td>${item.code}</td>
-                <td>${item.name}</td>
-                <td>${item.price}</td>
-                <td>${item.qty}</td>
+                <td>${item.iCode}</td>
+                <td>${item.iName}</td>
+                <td>${item.iPrice}</td>
+                <td>${item.iQty}</td>
                 <td>
                     <div class="container">
                         <div style="justify-content: center" class="row">
                             <button type="button"
                                 class="col col-12 col-sm12 col-md-8 col-lg-8 col-xl-4 col-xxl-4 btn btn-danger remove-t-btn"
-                                data-index = ${item.code}
+                                data-index = ${item.iCode}
                                 >
                                     Remove
                             </button>
@@ -107,9 +124,29 @@ const loadOrderItems = () => {
 const loadCustomers = () => {
     $("#customer").empty();
 
-    customers.map((customer) => {
-        $("#customer").append(`<option value="${customer.id}">${customer.id}</option>`);
+    $.ajax({
+        url: 'http://localhost:8080/pos/customer_servlet',
+        method: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            data.content.map((customer) => {
+                $("#customer").append(`<option value="${customer.cId}">${customer.cId}</option>`);
+
+            });
+
+            if (customer == null) {
+                $("#customer").append(`<option value="" hidden selected>Select Customer</option>`);
+                $("#c_name").val("");
+                $("#c_address").val("");
+                $("#c_salary").val("");
+
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('AJAX request failed: ' + status + ', ' + error);
+        }
     });
+
 
     if (customer == null) {
         $("#customer").append(`<option value="" hidden selected>Select Customer</option>`);
@@ -126,7 +163,7 @@ const loadItems = () => {
     $("#item").empty();
 
     items.map((item) => {
-        $("#item").append(`<option value="${item.code}">${item.code}</option>`);
+        $("#item").append(`<option value="${item.iCode}">${item.iCode}</option>`);
     });
 
     if (item == null) {
@@ -136,14 +173,37 @@ const loadItems = () => {
         $("#i_qty_on_hand").val("");
     }
 
+
 };
 
 $("#customer").on('change', function () {
-    let customerId = $(this).val();
-    customer = customers.find(customer => customer.id === customerId);
-    $("#c_name").val(customer.name);
-    $("#c_address").val(customer.address);
-    $("#c_salary").val(customer.salary);
+    $("#loading_div").css("display", "block");
+
+    $.ajax({
+        url: 'http://localhost:8080/pos/customer_servlet?cId=' + $(this).val(),
+        method: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            customer = data.content;
+
+            $("#c_name").val(customer.cName);
+            $("#c_address").val(customer.cAddress);
+            $("#c_salary").val(customer.cSalary);
+
+
+        },
+        error: function (xhr, status, error) {
+            Swal.fire(
+                'Failed',
+                'Can\'t find customer , Try another Id.',
+                'error'
+            )
+        },
+        complete: function () {
+            $("#loading_div").css("display", "none");
+        }
+    });
+
 
 });
 
@@ -153,10 +213,10 @@ $("#item").on('change', function () {
 
 function loadItem() {
     let itemCode = $("#item").val();
-    item = items.find(item => item.code === itemCode);
-    $("#i_name").val(item.name);
-    $("#i_price").val(item.price);
-    $("#i_qty_on_hand").val(item.qty);
+    item = items.find(item => item.iCode === itemCode);
+    $("#i_name").val(item.iName);
+    $("#i_price").val(item.iPrice);
+    $("#i_qty_on_hand").val(item.iQty);
     qtyInput.val("");
 
 }
@@ -185,7 +245,7 @@ $("#o-add-item-btn").on("click", () => {
 
     let qty = Number.parseInt(qtyInput.val());
 
-    if ((item.qty - qty) < 0) {
+    if ((item.iQty - qty) < 0) {
         Swal.fire({
             icon: 'error',
             title: 'Insufficient space',
@@ -194,15 +254,15 @@ $("#o-add-item-btn").on("click", () => {
         return;
     }
 
-    item.qty = item.qty - qty;
+    item.iQty = item.iQty - qty;
 
-    let orderItem = findOrderItem(item.code);
+    let orderItem = findOrderItem(item.iCode);
 
     if (orderItem != null) {
-        orderItem.qty = Number.parseInt(orderItem.qty) + qty;
+        orderItem.iQty = Number.parseInt(orderItem.iQty) + qty;
 
     } else {
-        let tempItem = new ItemModel(item.code, item.name, item.price, qty);
+        let tempItem = new ItemModel(item.iCode, item.iName, item.iPrice, qty);
         orderItems.push(tempItem);
 
     }
@@ -216,14 +276,14 @@ $("#o-add-item-btn").on("click", () => {
 });
 
 function findOrderItem(code) {
-    return orderItems.find(item => item.code === code);
+    return orderItems.find(item => item.iCode === code);
 
 }
 
 function calcTotal() {
     total = 0;
     orderItems.map(orderItem => {
-        total += (orderItem.qty * orderItem.price);
+        total += (orderItem.iQty * orderItem.iPrice);
     });
     total = total.toFixed(2);
 
@@ -262,12 +322,12 @@ cashInput.on("input", function () {
 // set remove btn action
 $("#o_table").on("click", "button", function () {
     let itemCodeRBtn = $(this).attr("data-index");
-    let itemOnOrder = orderItems.find(item => item.code == itemCodeRBtn);
-    let itemOnDB = items.find(item => item.code == itemCodeRBtn);
+    let itemOnOrder = orderItems.find(item => item.iCode == itemCodeRBtn);
+    let itemOnDB = items.find(item => item.iCode == itemCodeRBtn);
 
-    itemOnDB.qty += itemOnOrder.qty;
+    itemOnDB.iQty += itemOnOrder.iQty;
 
-    orderItems.splice(item => item.code == itemCodeRBtn, 1);
+    orderItems.splice(item => item.iCode == itemCodeRBtn, 1);
 
     calcTotal();
     loadItem();
@@ -297,45 +357,92 @@ $("#purchase_btn").on("click", () => {
         total,
         subTotal,
         discountInput.val(),
-        new CustomerModel(customer.id, customer.name, customer.address, customer.salary),
+        new CustomerModel(customer.cId, customer.cName, customer.cAddress, customer.cSalary),
         orderItems
     );
 
-    orders.push(order);
+    $("#loading_div").css("display", "block");
 
-    orderItems = [];
-    customer = null;
-    item = null;
 
-    Swal.fire('Saved!', '', 'success');
 
-    loadOrderItems();
-    clearAll();
+    var data = {
+        oId: $("#o_id").val(),
+        oDate: $("#date").val(),
+        oTotal: total,
+        oSubTotal: subTotal,
+        oDiscount: discountInput.val(),
+        oBalance: $("#balance").val(),
+        customerDTO: {
+            cId: customer.cId,
+            cName: customer.cName,
+            cAddress: customer.cAddress,
+            cSalary: customer.cSalary
+        },
+        items: orderItems
 
-    cashInput.val("");
-    discountInput.val("");
-    $("#balance").val("");
-    $("#total").text("Total : 0/=");
-    $("#sub-total").text("Sub Total : 0/=");
+    }
 
-    $("#orders_page").click();
+    $.ajax({
+        url: 'http://localhost:8080/pos/order_servlet',
+        method: 'POST',
+        dataType: 'json',
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        success: function (data) {
+            Swal.fire(
+                'Success',
+                'Order saved successfully',
+                'success'
+            )
+
+            orderItems = [];
+            customer = null;
+            item = null;
+
+            loadOrderItems();
+            clearAll();
+
+            cashInput.val("");
+            discountInput.val("");
+            $("#balance").val("");
+            $("#total").text("Total : 0/=");
+            $("#sub-total").text("Sub Total : 0/=");
+
+            $("#orders_page").click()
+        },
+        error: function (xhr, status, error) {
+            Swal.fire(
+                'Failed',
+                'Order not placed',
+                'error'
+            )
+        },
+        complete: function () {
+            $("#loading_div").css("display", "none");
+        }
+    });
 
 });
 
 export function init() {
-    // fieldsLock();
-    currentDate();
-    generateOId();
-    loadItems();
-    loadOrderItems();
-    loadCustomers();
+    $.ajax({
+        url: 'http://localhost:8080/pos/item_servlet',
+        method: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            items = data.content;
 
-    // $("#total").text("Total : 0/=");
-    // $("#sub-total").text("Sub Total : 0/=");
-    // cashInput.val("");
-    // total = 0;
-    // subTotal = 0;
-    // calcBalance();
+            currentDate();
+            generateOId();
+            loadItems();
+            loadOrderItems();
+            loadCustomers();
+        },
+        error: function (xhr, status, error) {
+            console.error('AJAX request failed: ' + status + ', ' + error);
+        }
+    });
+
 }
 
 // validations

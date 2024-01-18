@@ -1,9 +1,9 @@
 export class ItemModel {
     constructor(code , name , price , qty) {
-        this.code = code;
-        this.name = name;
-        this.price = price;
-        this.qty = qty;
+        this.iCode = code;
+        this.iName = name;
+        this.iPrice = price;
+        this.iQty = qty;
     }
 
 }

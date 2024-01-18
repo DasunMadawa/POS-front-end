@@ -60,15 +60,26 @@ $("#logo").on('click' , () => {
 $("#home_page").click();
 
 function homePageInit() {
-    let sales = 0;
-    for (let i = 0; i < orders.length; i++) {
-        sales+= orders[i].subTotal;
-    }
+    $.ajax({
+        url: 'http://localhost:8080/pos/home_servlet',
+        method: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            let homeDTO = data.content;
+            console.log(homeDTO.items);
 
-    $("#items_home").text(items.length);
-    $("#customers_home").text(customers.length);
-    $("#orders_home").text(orders.length);
-    $("#sales_home").text(sales);
+            $("#items_home").text(homeDTO.items)
+            $("#items_home").text(homeDTO.items)
+            $("#customers_home").text(homeDTO.customers)
+            $("#orders_home").text(homeDTO.orders)
+            $("#sales_home").text(homeDTO.sales)
+
+        },
+        error: function (xhr, status, error) {
+            console.error('AJAX request failed: ' + status + ', ' + error);
+        }
+    });
+
 
 }
 

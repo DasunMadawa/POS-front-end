@@ -18,38 +18,59 @@ searchBtn.on("click", function () {
         return false;
     }
 
-    let order = orders.find(order => order.id === orderIdInput.val());
+    $("#loading_div").css("display", "block");
 
-    if (order == null) {
-        Swal.fire({
-            icon: 'info',
-            title: 'Cant Find Order',
-            text: 'Check Another Oder Id!'
-        });
-        return;
-    }
+    $.ajax({
+        url: 'http://localhost:8080/pos/order_servlet?oId=' + orderIdInput.val(),
+        method: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            let order = data.content;
 
-    let customer = order.customerModel;
-    let orderItems = order.items
+            if (order == null) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Cant Find Order',
+                    text: 'Check Another Oder Id!'
+                });
+                return;
+            }
 
-    // date
-    $("#date_history").val(order.date);
+            let customer = order.customerDTO;
+            let orderItems = order.items
 
-    // customer
-    $("#c_id_history").val(customer.id);
-    $("#c_name_history").val(customer.name);
-    $("#c_address_history").val(customer.address);
-    $("#c_salary_history").val(customer.salary);
+            // date
+            $("#date_history").val(order.oDate);
 
-    // total
-    $("#total_history").text("Total : " + order.total + "/=");
-    $("#sub-total_history").text("Total : " + order.subTotal + "/=");
-    $("#discount_history").val(order.discount);
+            // customer
+            $("#c_id_history").val(customer.cId);
+            $("#c_name_history").val(customer.cName);
+            $("#c_address_history").val(customer.cAddress);
+            $("#c_salary_history").val(customer.cSalary);
 
-    // items
-    loadOrderItems(orderItems);
+            // total
+            $("#total_history").text("Total : " + order.oTotal + "/=");
+            $("#sub-total_history").text("Total : " + order.oSubTotal + "/=");
+            $("#discount_history").val(order.oDiscount);
 
-    clear();
+            // items
+            loadOrderItems(orderItems);
+
+            clear();
+
+        },
+        error: function (xhr, status, error) {
+            Swal.fire({
+                icon: 'info',
+                title: 'Can\'t Find Item',
+                text: 'Check Another ID !'
+            });
+        },
+        complete: function () {
+            $("#loading_div").css("display", "none");
+        }
+    });
+
 
 });
 
@@ -61,10 +82,10 @@ const loadOrderItems = (orderItems) => {
     orderItems.map((item) => {
         $("#o_table_history>tbody").append(
             `<tr>
-                <td>${item.code}</td>
-                <td>${item.name}</td>
-                <td>${item.price}</td>
-                <td>${item.qty}</td>
+                <td>${item.iCode}</td>
+                <td>${item.iName}</td>
+                <td>${item.iPrice}</td>
+                <td>${item.iQty}</td>
             </tr>`
         );
     });
