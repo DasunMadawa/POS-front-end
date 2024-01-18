@@ -1,0 +1,72 @@
+body > .background {
+    top: 10px;
+    display: block;
+    height: max-content;
+}
+
+.order_card , .customer_card , .item_card {
+    display: flex;
+    /*flex-wrap: wrap;*/
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    background-color: #FAFAFA;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 8px 24px;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px;
+    width: calc(100% - 20px);
+    height: calc(100% - 20px);
+
+}
+
+.item_card > div {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.item_col {
+    /*justify-content: space-between;*/
+}
+
+tr > td {
+    padding: 7px!important;
+}
+
+.order_card > div > div:nth-child(2) {
+    /*width: 100%;*/
+}
+
+#customers , #items {
+    margin: 8px 0 0 0;
+}
+
+.add_item_btn , .purchase_btn {
+    margin: auto;
+    width: 100px!important;
+    height: 40px!important;
+}
+
+.purchase_btn {
+    background-color: #1CAF82;
+    border: transparent;
+}
+
+.purchase_btn:hover {
+    background-color: #006b4d;
+}
+
+@media all and (max-width: 450px){
+    .remove-t-btn {
+        font-size: 10px;
+        padding: 2px;
+        width: fit-content;
+    }
+
+}
+
+
+
+
+

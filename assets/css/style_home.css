@@ -1,0 +1,55 @@
+.background > div:first-child > div:first-child {
+    justify-content: center;
+
+}
+
+.menu_card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #FAFAFA;
+    border-radius: 10px;
+    margin: 10px;
+    /*padding: 10px;*/
+    padding: 3.5vw 0 3.5vw 0;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 8px 24px;
+    /*aspect-ratio: 1/1;*/
+
+}
+
+.menu_card > i {
+    font-size: 30px;
+}
+
+.menu_card > h4:nth-child(2) {
+    font-size: 20px;
+
+}
+
+.menu_card > h4:nth-child(3) {
+    font-size: 32px;
+
+}
+
+.menu_card > h4:nth-child(4) {
+    font-size: 18px;
+    color: #A4A6A7;
+
+}
+
+.menu_item_1 {
+    color: #1CAF82;
+}
+.menu_item_2 {
+    color: #623CEA;
+}
+.menu_item_3 {
+    color: #FF9E0B;
+}
+.menu_item_4 {
+    color: #3F8EFC;
+}
+
+
+

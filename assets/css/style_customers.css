@@ -1,0 +1,117 @@
+body > .background {
+    top: 4px;
+    display: block;
+    height: max-content;
+}
+
+/*.search_card {*/
+/*    display: flex;*/
+/*    flex-wrap: wrap;*/
+/*    !*flex-direction: column;*!*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*    align-content: center;*/
+/*    background-color: #FAFAFA;*/
+/*    box-shadow: rgba(0, 0, 0, 0.2) 0px 8px 24px;*/
+/*    border-radius: 10px;*/
+/*    padding: 20px;*/
+/*    margin: 5px;*/
+/*    height: calc(100% - 10px);*/
+/*    width: calc(100% - 10px);*/
+
+/*}*/
+
+/*.search_card > button {*/
+/*    margin: 10px;*/
+/*    background-color: #5227CC;*/
+/*}*/
+
+/*.search_card > div {*/
+/*    margin-bottom: 0!important;*/
+/*}*/
+
+/*.input_card > div:first-child > div {*/
+/*    margin-bottom: 0!important;*/
+/*    margin: 2px;*/
+/*}*/
+
+/*.input_card {*/
+/*    display: flex;*/
+/*    flex-wrap: wrap;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*    background-color: #FAFAFA;*/
+/*    box-shadow: rgba(0, 0, 0, 0.2) 0px 8px 24px;*/
+/*    border-radius: 10px;*/
+/*    padding: 20px;*/
+/*    margin: 5px;*/
+/*    height: calc(100% - 10px);*/
+/*    width: calc(100% - 10px);*/
+
+/*}*/
+
+/*.input_card > div:first-child {*/
+/*    display: flex;*/
+/*    flex-wrap: wrap;*/
+/*    align-items: center;*/
+/*    justify-content: space-around;*/
+
+/*}*/
+
+/*.input_card > div:first-child > div {*/
+/*    !*margin: 10px 0 10px 0;*!*/
+
+/*}*/
+
+/*.input_card > div:nth-child(2) {*/
+/*    display: flex;*/
+/*    flex-wrap: wrap;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+
+/*}*/
+
+/*.input_card > div:nth-child(2) > button {*/
+/*    width: 80px;*/
+/*    border: transparent;*/
+/*    margin: 5px;*/
+
+/*}*/
+
+/*.input_card > div:nth-child(2) > button:first-child {*/
+/*    background-color: #1CAF82;*/
+
+/*}*/
+
+/*.input_card > div:nth-child(2) > button:nth-child(2) {*/
+/*    background-color: #3F8EFC;*/
+
+/*}*/
+
+/*.input_card > div:nth-child(2) > button:nth-child(3) {*/
+/*    background-color: #EF233C;*/
+
+/*}*/
+
+/*.input_card > div:nth-child(2) > button:nth-child(4) {*/
+/*    background-color: #FFBA08;*/
+
+/*}*/
+
+/*.table_card {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*    background-color: #FAFAFA;*/
+/*    box-shadow: rgba(0, 0, 0, 0.2) 0px 8px 24px;*/
+/*    border-radius: 10px;*/
+/*    box-sizing: border-box;*/
+/*    padding: 5px 20px 5px 20px;*/
+/*    margin: 5px 15px 5px 15px;*/
+/*    !*width: calc(100% - 10px);*!*/
+/*}*/
+
+
+
+
